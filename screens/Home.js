@@ -6,12 +6,7 @@ import getUniqueId from "../utils/getUniqueId";
 export default function Home() {
   const ctx = useContext(EventsContext);
   const handlePress = () => {
-    ctx.dispatchEvents({ type: "clear" });
-    ctx.dispatchEvents({
-      type: "add",
-      event: { name: "asd", id: getUniqueId() },
-    });
-    getUniqueId();
+    ctx.addEvent({ name: "asd", id: getUniqueId() });
   };
   return (
     <View style={styles.container}>
