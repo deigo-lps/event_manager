@@ -3,30 +3,37 @@ import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import EventsContext from "../store/events-context";
 import getUniqueId from "../utils/getUniqueId";
 import EventCard from "../components/EventCard";
+import Container from "../components/Container";
 
-export default function Home() {
+export default function Home({ navigation }) {
   const ctx = useContext(EventsContext);
   const handlePress = () => {
+    const date = new Date();
     ctx.addEvent({
       id: getUniqueId(),
       name: "Name",
-      date: "25 oct. 2020",
+      date: {
+        day: date.getDay(),
+        month: date.toLocaleString('default', { month: 'short' }),
+        year: date.getFullYear(),
+      },
       location: {
         city: "São Paulo",
         street: "Avenida Paulista",
         number: 731,
       },
-      tickets: 200,
+      tickets: 1,
+      price: 50,
     });
   };
   const handleClear = () => {
     ctx.clearEvents();
   };
   return (
-    <View style={styles.container}>
+    <Container>
       <FlatList
         data={ctx.eventsState}
-        renderItem={({ item }) => <EventCard item={item} />}
+        renderItem={({ item }) => <EventCard item={item} navigation={navigation}/>}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.contentContainer}
       />
@@ -36,18 +43,11 @@ export default function Home() {
       <Pressable onPress={handleClear}>
         <Text>Clear</Text>
       </Pressable>
-    </View>
+    </Container>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: 40,
-    paddingLeft: 16,
-    paddingRight: 16,
-    backgroundColor: "#242936",
-    flex: 1,
-  },
   contentContainer: {
     gap: 8,
   },

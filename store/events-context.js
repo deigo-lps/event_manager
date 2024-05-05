@@ -1,13 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import setIsFav from "../utils/setIsFav";
+import addBooking from "../utils/addBooking";
 
 const EventsContext = React.createContext({
   eventsState: [],
   addEvent: (event) => {},
   clearEvents: () => {},
   toggleFav: (id) => {},
-  isLoading: false,
+  createBooking: ({ id, obj }) => {},
 });
 
 const eventsReducer = (state, action) => {
@@ -27,58 +28,58 @@ const eventsReducer = (state, action) => {
       setIsFav(newState, action.id);
       return newState;
     }
+    case "book": {
+      const newState = [...state];
+      addBooking({ events: newState, id: action.id, info: action.info });
+      return newState;
+    }
   }
 };
 
 export const EventsContextProvider = (props) => {
   const [eventsState, dispatchEvents] = useReducer(eventsReducer, []);
-  const [isLoading, setIsLoading] = useState(false);
-  const loadingRef = useRef(false);
 
   useEffect(() => {
     const handleInit = async () => {
-      setIsLoading(true);
       const storageState = await AsyncStorage.getItem("events");
       if (storageState) dispatchEvents({ type: "init", events: JSON.parse(storageState) });
-      setIsLoading(false);
     };
     handleInit();
   }, []);
 
   const addEvent = async (event) => {
-    setIsLoading(true);
     dispatchEvents({ type: "add", event });
     const prevEventsString = await AsyncStorage.getItem("events");
     if (prevEventsString) {
       const prevEvents = JSON.parse(prevEventsString);
       await AsyncStorage.setItem("events", JSON.stringify([...prevEvents, event]));
-      setIsLoading(false);
     } else {
       await AsyncStorage.setItem("events", JSON.stringify([event]));
-      setIsLoading(false);
     }
   };
 
   const clearEvents = async () => {
-    setIsLoading(true);
     dispatchEvents({ type: "clear" });
     await AsyncStorage.clear();
-    setIsLoading(false);
   };
 
   const toggleFav = async (id) => {
-    if (!loadingRef.current) {
-      loadingRef.current = true;
-      dispatchEvents({ type: "toggleFav", id });
-      const eventsString = await AsyncStorage.getItem("events");
-      const events = JSON.parse(eventsString);
-      setIsFav(events, id);
-      await AsyncStorage.setItem("events", JSON.stringify(events));
-      loadingRef.current = false;
-    }
+    dispatchEvents({ type: "toggleFav", id });
+    const eventsString = await AsyncStorage.getItem("events");
+    const events = JSON.parse(eventsString);
+    setIsFav(events, id);
+    await AsyncStorage.setItem("events", JSON.stringify(events));
   };
 
-  return <EventsContext.Provider value={{ eventsState, addEvent, clearEvents, isLoading, toggleFav }}>{props.children}</EventsContext.Provider>;
+  const createBooking = async ({ id, obj }) => {
+    dispatchEvents({ type: "book", info: obj, id: id });
+    const eventsString = await AsyncStorage.getItem("events");
+    const events = JSON.parse(eventsString);
+    addBooking({events, id, info: obj})
+    await AsyncStorage.setItem("events", JSON.stringify(events));
+  };
+
+  return <EventsContext.Provider value={{ eventsState, addEvent, clearEvents, toggleFav, createBooking }}>{props.children}</EventsContext.Provider>;
 };
 
 export default EventsContext;

@@ -1,32 +1,28 @@
-import { useContext } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import EventsContext from "../store/events-context";
 import image from "../images/image.png";
-import Star from "../icons/Star";
+import ToggleFavButton from "./ToggleFavButton";
 
-export default function EventCard({ item }) {
-  const ctx = useContext(EventsContext);
+export default function EventCard({ item, navigation }) {
+  const handleNavigation = () => {
+    navigation.navigate("Book", { id: item.id });
+  };
   return (
     <View style={styles.card}>
       <View style={styles.cardContent}>
         <Image style={styles.image} source={image} resizeMode="cover" />
         <View>
           <View style={styles.cardTopRow}>
-            <Text style={styles.date}>{item.date}</Text>
-            <Pressable
-              onPress={() => {
-                ctx.toggleFav(item.id);
-              }}
-            >
-              <Star style={styles.star} width={20} height={20} fill={item.isFav ? "#f9b8b6" : "transparent"} stroke={"#f9b8b6"} />
-            </Pressable>
+            <Text style={styles.date}>{`${item.date.day} ${item.date.month} ${item.date.year}`}</Text>
+            <ToggleFavButton item={item}/>
           </View>
           <Text style={styles.name}>{item.name}</Text>
           <Text style={styles.location}>{`${item.location.number} ${item.location.street}, ${item.location.city}`}</Text>
         </View>
       </View>
-      <Pressable style={styles.bookButton}>
-        <Text style={styles.bookButtonText}>Book Ticket</Text>
+      <Pressable>
+        <Text onPress={handleNavigation} style={styles.bookButton}>
+          Book Ticket
+        </Text>
       </Pressable>
     </View>
   );
@@ -37,8 +33,6 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 8,
-    borderColor: "white",
-    borderWidth: 2,
   },
   card: {
     flexDirection: "row",
@@ -62,18 +56,15 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     lineHeight: 20,
-    color: "white",
   },
   location: {
-    color: "#c5c6cc",
+    color: "#6b6b6b",
     fontSize: 12,
   },
   bookButton: {
-    backgroundColor: "#444e66",
+    backgroundColor: "#4e37b2",
     padding: 8,
     borderRadius: 8,
-  },
-  bookButtonText: {
     color: "white",
     fontSize: 14,
   },
