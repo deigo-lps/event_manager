@@ -1,11 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
+import setIsFav from "../utils/setIsFav";
 
 const EventsContext = React.createContext({
   eventsState: [],
   addEvent: (event) => {},
   clearEvents: () => {},
-  dispatchEvents: () => {},
+  toggleFav: (id) => {},
   isLoading: false,
 });
 
@@ -19,8 +20,12 @@ const eventsReducer = (state, action) => {
       return [...state, newEvent];
     }
     case "init": {
-      console.log(action.events[0].name);
       return action.events;
+    }
+    case "toggleFav": {
+      const newState = [...state];
+      setIsFav(newState, action.id);
+      return newState;
     }
   }
 };
@@ -28,6 +33,7 @@ const eventsReducer = (state, action) => {
 export const EventsContextProvider = (props) => {
   const [eventsState, dispatchEvents] = useReducer(eventsReducer, []);
   const [isLoading, setIsLoading] = useState(false);
+  const loadingRef = useRef(false);
 
   useEffect(() => {
     const handleInit = async () => {
@@ -60,7 +66,19 @@ export const EventsContextProvider = (props) => {
     setIsLoading(false);
   };
 
-  return <EventsContext.Provider value={{ eventsState, addEvent, clearEvents, isLoading }}>{props.children}</EventsContext.Provider>;
+  const toggleFav = async (id) => {
+    if (!loadingRef.current) {
+      loadingRef.current = true;
+      dispatchEvents({ type: "toggleFav", id });
+      const eventsString = await AsyncStorage.getItem("events");
+      const events = JSON.parse(eventsString);
+      setIsFav(events, id);
+      await AsyncStorage.setItem("events", JSON.stringify(events));
+      loadingRef.current = false;
+    }
+  };
+
+  return <EventsContext.Provider value={{ eventsState, addEvent, clearEvents, isLoading, toggleFav }}>{props.children}</EventsContext.Provider>;
 };
 
 export default EventsContext;
