@@ -45,7 +45,7 @@ export default function BookForm({ event, navigation }) {
 
   return (
     <>
-      {showPicker && <RNDateTimePicker value={date} onChange={handleDateChange} />}
+      {showPicker && <RNDateTimePicker display="spinner" value={date} onChange={handleDateChange} />}
       <TextInput style={styles.input} placeholder="Full Name" onChangeText={(newText) => setName(newText)} />
       <Pressable
         style={styles.birth}
@@ -58,8 +58,8 @@ export default function BookForm({ event, navigation }) {
         </Text>
       </Pressable>
       <TextInput style={styles.input} placeholder="Document" onChangeText={(newText) => setDocument(newText)} />
-      <Pressable onPress={handleSubmit}>
-        <Text style={styles.button}>Book</Text>
+      <Pressable style={styles.button} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>Book</Text>
       </Pressable>
     </>
   );
@@ -98,5 +98,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     padding: 14,
     borderRadius: 8,
+  },
+  buttonText: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 18,
   },
 });

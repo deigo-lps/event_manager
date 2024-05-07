@@ -6,7 +6,7 @@ export default function Container({ children, style }) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 40,
+    paddingTop: 50,
     paddingLeft: 16,
     paddingRight: 16,
     backgroundColor: "#f4f4f4",

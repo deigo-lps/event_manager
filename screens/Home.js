@@ -1,9 +1,10 @@
 import { useContext } from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text } from "react-native";
 import EventsContext from "../store/events-context";
 import getUniqueId from "../utils/getUniqueId";
 import EventCard from "../components/EventCard";
 import Container from "../components/Container";
+import sortFav from "../utils/sortFav";
 
 export default function Home({ navigation }) {
   const ctx = useContext(EventsContext);
@@ -11,7 +12,7 @@ export default function Home({ navigation }) {
     const date = new Date();
     ctx.addEvent({
       id: getUniqueId(),
-      name: "Name",
+      name: `Name${ctx.eventsState.length}`,
       date: {
         day: date.getDay(),
         month: date.toLocaleString('default', { month: 'short' }),
@@ -32,7 +33,7 @@ export default function Home({ navigation }) {
   return (
     <Container>
       <FlatList
-        data={ctx.eventsState}
+        data={ctx.eventsState.sort((a, b) => sortFav(a, b))}
         renderItem={({ item }) => <EventCard item={item} navigation={navigation}/>}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.contentContainer}

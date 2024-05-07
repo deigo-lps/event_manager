@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import setIsFav from "../utils/setIsFav";
 import addBooking from "../utils/addBooking";
+import addSorted from "../utils/addSorted";
 
 const EventsContext = React.createContext({
   eventsState: [],
@@ -18,7 +19,9 @@ const eventsReducer = (state, action) => {
     }
     case "add": {
       const newEvent = action.event;
-      return [...state, newEvent];
+      const newState = [...state];
+      addSorted(newEvent, newState);
+      return newState;
     }
     case "init": {
       return action.events;
@@ -49,10 +52,11 @@ export const EventsContextProvider = (props) => {
 
   const addEvent = async (event) => {
     dispatchEvents({ type: "add", event });
-    const prevEventsString = await AsyncStorage.getItem("events");
-    if (prevEventsString) {
-      const prevEvents = JSON.parse(prevEventsString);
-      await AsyncStorage.setItem("events", JSON.stringify([...prevEvents, event]));
+    const eventsString = await AsyncStorage.getItem("events");
+    if (eventsString) {
+      const eventsArray = JSON.parse(eventsString);
+      addSorted(event, eventsArray);
+      await AsyncStorage.setItem("events", JSON.stringify(eventsArray));
     } else {
       await AsyncStorage.setItem("events", JSON.stringify([event]));
     }
@@ -75,7 +79,7 @@ export const EventsContextProvider = (props) => {
     dispatchEvents({ type: "book", info: obj, id: id });
     const eventsString = await AsyncStorage.getItem("events");
     const events = JSON.parse(eventsString);
-    addBooking({events, id, info: obj})
+    addBooking({ events, id, info: obj });
     await AsyncStorage.setItem("events", JSON.stringify(events));
   };
 

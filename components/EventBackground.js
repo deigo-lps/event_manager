@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   image: {
     height: 250,
     padding: 16,
-    paddingTop: 40,
+    paddingTop: 50,
     flexDirection: "row",
     justifyContent: "space-between",
   },
