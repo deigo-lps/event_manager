@@ -16,6 +16,24 @@ export default function App() {
   const Tab = createBottomTabNavigator();
   const Drawer = createDrawerNavigator();
 
+  const HomeStack = () => {
+    return (
+      <Stack.Navigator headerShown={false}>
+        <Stack.Screen name="HomeStack" component={Home} options={{ headerShown: false }} />
+        <Stack.Screen name="Book" component={Book} options={{ headerShown: false }} />
+      </Stack.Navigator>
+    );
+  };
+
+  const ManagerStack = () => {
+    return (
+      <Stack.Navigator headerShown={false}>
+        <Stack.Screen name="Manager" component={Manager} options={{ headerShown: false }} />
+        <Stack.Screen name="Update" component={Create} options={{ headerShown: false }} />
+      </Stack.Navigator>
+    );
+  };
+
   const Tabs = () => {
     return (
       <Tab.Navigator
@@ -24,24 +42,15 @@ export default function App() {
           tabBarIcon: ({ focused }) => {
             if (route.name === "Home") {
               return focused ? <HomeIcon width="20" height="20" fill="#fc8f94" /> : <HomeIcon width="20" height="20" fill="#818393" />;
-            } else if (route.name === "Manager") {
+            } else if (route.name === "ManagerStack") {
               return focused ? <Config width="20" height="20" fill="#fc8f94" /> : <Config width="20" height="20" fill="#818393" />;
             }
           },
         })}
       >
         <Tab.Screen name="Home" component={HomeStack} options={{ headerShown: false }} />
-        <Tab.Screen name="Manager" component={Manager} options={{ headerShown: false }} />
+        <Tab.Screen name="ManagerStack" component={ManagerStack} options={{ headerShown: false }} />
       </Tab.Navigator>
-    );
-  };
-
-  const HomeStack = () => {
-    return (
-      <Stack.Navigator headerShown={false}>
-        <Stack.Screen name="HomeStack" component={Home} options={{ headerShown: false }} />
-        <Stack.Screen name="Book" component={Book} options={{ headerShown: false, drawerEnabled: false, tabBarVisible: false }} />
-      </Stack.Navigator>
     );
   };
 

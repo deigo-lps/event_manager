@@ -1,6 +1,6 @@
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useContext, useState } from "react";
-import { Image, Pressable, StyleSheet, Text, TextInput } from "react-native";
+import { Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import EventsContext from "../store/events-context";
 import { Alert } from "react-native";
 import Container from "../components/Container";
@@ -8,18 +8,19 @@ import getUniqueId from "../utils/getUniqueId";
 import ImageIcon from "../icons/ImageIcon";
 import * as ImagePicker from "expo-image-picker";
 
-export default function Create() {
+export default function Create({ route, navigation }) {
+  const event = route?.params?.event;
   const ctx = useContext(EventsContext);
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState((event?.fullDate && new Date(event.fullDate)) || new Date());
   const [showPicker, setShowPicker] = useState(false);
-  const [dateIsSet, setDateIsSet] = useState(false);
-  const [name, setName] = useState("");
-  const [street, setStreet] = useState("");
-  const [streetNumber, setStreetNumber] = useState("");
-  const [city, setCity] = useState("");
-  const [price, setPrice] = useState("");
-  const [qtty, setQtty] = useState("");
-  const [image, setImage] = useState(null);
+  const [dateIsSet, setDateIsSet] = useState(event);
+  const [name, setName] = useState(event?.name || "");
+  const [street, setStreet] = useState(event?.location.street || "");
+  const [streetNumber, setStreetNumber] = useState(event?.location.number || "");
+  const [city, setCity] = useState(event?.location.city || "");
+  const [price, setPrice] = useState(event?.price || "");
+  const [qtty, setQtty] = useState(event?.tickets || "");
+  const [image, setImage] = useState(event?.image || null);
 
   const handleDateChange = (e) => {
     setDate(new Date(e.nativeEvent.timestamp));
@@ -48,7 +49,7 @@ export default function Create() {
       city.trim() === "" ||
       price.trim() === "" ||
       qtty.trim() === "" ||
-      image !== null
+      image === null
     ) {
       Alert.alert("Missing Field.", "Please fill in every field.", [{ text: "Ok" }]);
       return;
@@ -57,9 +58,9 @@ export default function Create() {
       Alert.alert("Invalid Field.", "Please fill in the fields correctly.", [{ text: "Ok" }]);
       return;
     }
-    ctx.addEvent({
-      id: getUniqueId(),
+    eventObj = {
       name: name,
+      fullDate: date,
       date: {
         day: date.getDate(),
         month: date.toLocaleString("default", { month: "short" }),
@@ -72,9 +73,20 @@ export default function Create() {
       },
       tickets: qtty,
       price: price,
-      image: image
-    });
-    Alert.alert("Event Created.", `${name} created.`, [{ text: "Ok" }]);
+      image: image,
+    };
+    if (event) {
+      ctx.updateEvent({ id: event.id, bookings: event.bookings, isFav: event.isFav, ...eventObj });
+      Alert.alert("Event Updated.", `${name} updated.`, [{ text: "Ok" }]);
+      navigation.goBack();
+    } else {
+      ctx.addEvent({
+        id: getUniqueId(),
+        ...eventObj,
+      });
+      Alert.alert("Event Created.", `${name} created.`, [{ text: "Ok" }]);
+      navigation.navigate("Main Navigation");
+    }
     setDateIsSet(false);
     setName("");
     setStreet("");
@@ -158,13 +170,30 @@ export default function Create() {
           setQtty(newText);
         }}
       />
-      <Pressable style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Create Event</Text>
-      </Pressable>
+      <View style={styles.buttons}>
+        <Pressable style={styles.button} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Save Event</Text>
+        </Pressable>
+        {event && (
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Text style={styles.buttonText}>Cancel</Text>
+          </Pressable>
+        )}
+      </View>
     </Container>
   );
 }
 const styles = StyleSheet.create({
+  buttons: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: "auto",
+  },
   setImage: {
     borderRadius: 100,
     backgroundColor: "#4e38b2",
@@ -207,7 +236,7 @@ const styles = StyleSheet.create({
     color: "#6d6d6d",
   },
   button: {
-    width: "100%",
+    flex: 1,
     backgroundColor: "#4e37b2",
     color: "white",
     textAlign: "center",
@@ -215,7 +244,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     padding: 14,
     borderRadius: 8,
-    marginTop: "auto",
   },
   buttonText: {
     color: "white",

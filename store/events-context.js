@@ -11,6 +11,7 @@ const EventsContext = React.createContext({
   clearEvents: () => {},
   toggleFav: (id) => {},
   deleteEvent: (id) => {},
+  updateEvent: (event) => {},
   createBooking: ({ id, obj }) => {},
 });
 
@@ -23,6 +24,11 @@ const eventsReducer = (state, action) => {
       const newEvent = action.event;
       const newState = [...state];
       addSorted(newEvent, newState);
+      return newState;
+    }
+    case "update": {
+      const newState = state.filter((event) => event.id !== action.event.id);
+      addSorted(action.event, newState);
       return newState;
     }
     case "delete": {
@@ -65,6 +71,14 @@ export const EventsContextProvider = (props) => {
     } else {
       await AsyncStorage.setItem("events", JSON.stringify([event]));
     }
+  };
+
+  const updateEvent = async (event) => {
+    dispatchEvents({ type: "update", event });
+    const eventsString = await AsyncStorage.getItem("events");
+    const eventsArray = JSON.parse(eventsString).filter((old) => old.id !== event);
+    addSorted(event, eventsArray);
+    await AsyncStorage.setItem("events", JSON.stringify(eventsArray));
   };
 
   const clearEvents = () => {
@@ -116,7 +130,9 @@ export const EventsContextProvider = (props) => {
   };
 
   return (
-    <EventsContext.Provider value={{ eventsState, addEvent, clearEvents, toggleFav, createBooking, deleteEvent }}>{props.children}</EventsContext.Provider>
+    <EventsContext.Provider value={{ eventsState, addEvent, clearEvents, toggleFav, createBooking, deleteEvent, updateEvent }}>
+      {props.children}
+    </EventsContext.Provider>
   );
 };
 

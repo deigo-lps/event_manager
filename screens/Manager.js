@@ -5,7 +5,7 @@ import Container from "../components/Container";
 import EventCard from "../components/EventCard";
 import ManagerButtons from "../components/ManagerButtons";
 
-export default function Manager() {
+export default function Manager({ navigation }) {
   const ctx = useContext(EventsContext);
   const [events, setEvents] = useState(ctx.eventsState);
   useEffect(() => {
@@ -26,7 +26,7 @@ export default function Manager() {
       <TextInput style={styles.input} placeholder="Search" onChangeText={(newText) => handleSearch(newText)} />
       <FlatList
         data={events}
-        renderItem={({ item }) => <EventCard item={item} Buttons={() => <ManagerButtons id={item.id} ctx={ctx} />} />}
+        renderItem={({ item }) => <EventCard item={item} Buttons={() => <ManagerButtons event={item} navigation={navigation} ctx={ctx} />} />}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.contentContainer}
       />
