@@ -1,12 +1,11 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import image from "../images/image.png";
 import ToggleFavButton from "./ToggleFavButton";
 
 export default function Test({ item, Buttons }) {
   return (
     <View style={styles.card}>
       <View style={styles.cardContent}>
-        <Image style={styles.image} source={image} resizeMode="cover" />
+        <Image style={styles.image} source={{uri: item.image}} resizeMode="cover" />
         <View style={styles.cardTextsWrapper}>
           <View style={styles.cardTopRow}>
             <Text style={styles.date}>{`${item.date.day} ${item.date.month} ${item.date.year}`}</Text>

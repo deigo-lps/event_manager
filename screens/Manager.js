@@ -4,7 +4,6 @@ import EventsContext from "../store/events-context";
 import Container from "../components/Container";
 import EventCard from "../components/EventCard";
 import ManagerButtons from "../components/ManagerButtons";
-import Temp from "../components/Temp";
 
 export default function Manager() {
   const ctx = useContext(EventsContext);
@@ -34,7 +33,6 @@ export default function Manager() {
       <Pressable style={styles.button} onPress={ctx.clearEvents}>
         <Text style={styles.buttonText}>Clear Events</Text>
       </Pressable>
-      <Temp />
     </Container>
   );
 }

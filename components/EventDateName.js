@@ -6,6 +6,7 @@ export default function EventDateName({ event }) {
       <View style={styles.date}>
         <Text style={styles.day}>{event.date.day}</Text>
         <Text style={styles.month}>{event.date.month}</Text>
+        <Text style={styles.year}>{event.date.year}</Text>
       </View>
       <Text style={styles.name}>{event.name}</Text>
     </View>
@@ -24,6 +25,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 8,
     padding: 8,
+    paddingLeft: 12,
+    paddingRight: 12,
   },
   day: {
     fontSize: 22,
@@ -34,6 +37,12 @@ const styles = StyleSheet.create({
   month: {
     fontSize: 16,
     lineHeight: 16,
+    color: "white",
+    marginBottom: 4,
+  },
+  year: {
+    fontSize: 12,
+    lineHeight: 12,
     color: "white",
   },
   name: {

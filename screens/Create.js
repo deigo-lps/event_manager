@@ -1,10 +1,12 @@
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useContext, useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput } from "react-native";
+import { Image, Pressable, StyleSheet, Text, TextInput } from "react-native";
 import EventsContext from "../store/events-context";
 import { Alert } from "react-native";
 import Container from "../components/Container";
 import getUniqueId from "../utils/getUniqueId";
+import ImageIcon from "../icons/ImageIcon";
+import * as ImagePicker from "expo-image-picker";
 
 export default function Create() {
   const ctx = useContext(EventsContext);
@@ -17,11 +19,24 @@ export default function Create() {
   const [city, setCity] = useState("");
   const [price, setPrice] = useState("");
   const [qtty, setQtty] = useState("");
+  const [image, setImage] = useState(null);
 
   const handleDateChange = (e) => {
     setDate(new Date(e.nativeEvent.timestamp));
     setDateIsSet(true);
     setShowPicker(false);
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
   };
 
   const handleSubmit = () => {
@@ -32,7 +47,8 @@ export default function Create() {
       streetNumber.trim() === "" ||
       city.trim() === "" ||
       price.trim() === "" ||
-      qtty.trim() === ""
+      qtty.trim() === "" ||
+      image !== null
     ) {
       Alert.alert("Missing Field.", "Please fill in every field.", [{ text: "Ok" }]);
       return;
@@ -56,6 +72,7 @@ export default function Create() {
       },
       tickets: qtty,
       price: price,
+      image: image
     });
     Alert.alert("Event Created.", `${name} created.`, [{ text: "Ok" }]);
     setDateIsSet(false);
@@ -65,11 +82,21 @@ export default function Create() {
     setCity("");
     setPrice("");
     setQtty("");
+    setImage(null);
   };
 
   return (
     <Container>
       {showPicker && <RNDateTimePicker display="spinner" value={date} onChange={handleDateChange} />}
+      {image ? (
+        <Pressable style={styles.setImage} onPress={pickImage}>
+          <Image style={styles.image} source={{ uri: image }} resizeMode="cover" />
+        </Pressable>
+      ) : (
+        <Pressable style={styles.setImage} onPress={pickImage}>
+          <ImageIcon fill="white" width="25" height="25" />
+        </Pressable>
+      )}
       <TextInput
         style={styles.input}
         placeholder="Name"
@@ -138,6 +165,23 @@ export default function Create() {
   );
 }
 const styles = StyleSheet.create({
+  setImage: {
+    borderRadius: 100,
+    backgroundColor: "#4e38b2",
+    width: 60,
+    height: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+  image: {
+    borderRadius: 100,
+    width: 60,
+    height: 60,
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
   input: {
     borderWidth: 2,
     borderColor: "#e3e1e1",
@@ -172,7 +216,6 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 8,
     marginTop: "auto",
-    marginBottom: 16,
   },
   buttonText: {
     color: "white",
