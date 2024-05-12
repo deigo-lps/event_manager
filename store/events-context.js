@@ -67,9 +67,19 @@ export const EventsContextProvider = (props) => {
     }
   };
 
-  const clearEvents = async () => {
-    dispatchEvents({ type: "clear" });
-    await AsyncStorage.clear();
+  const clearEvents = () => {
+    Alert.alert("Are you sure?", "Are you sure you want clear all events?", [
+      {
+        text: "yes",
+        onPress: async () => {
+          dispatchEvents({ type: "clear" });
+          await AsyncStorage.clear();
+        },
+      },
+      {
+        text: "cancel",
+      },
+    ]);
   };
 
   const toggleFav = async (id) => {
