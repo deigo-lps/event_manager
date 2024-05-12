@@ -1,12 +1,8 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import image from "../images/image.png";
 import ToggleFavButton from "./ToggleFavButton";
-import Star from "../icons/Star";
 
-export default function EventCard({ item, navigation }) {
-  const handleNavigation = () => {
-    navigation.navigate("Book", { id: item.id });
-  };
+export default function Test({ item, Buttons }) {
   return (
     <View style={styles.card}>
       <View style={styles.cardContent}>
@@ -20,11 +16,7 @@ export default function EventCard({ item, navigation }) {
           <Text style={styles.location}>{`${item.location.number} ${item.location.street}, ${item.location.city}`}</Text>
         </View>
       </View>
-      <Pressable onPress={handleNavigation} style={styles.bookButton}>
-        <Text style={styles.bookButtonText}>
-          Book Ticket
-        </Text>
-      </Pressable>
+      <Buttons/>
     </View>
   );
 }
@@ -61,16 +53,5 @@ const styles = StyleSheet.create({
   location: {
     color: "#6b6b6b",
     fontSize: 12,
-  },
-  bookButton: {
-    backgroundColor: "#4e37b2",
-    padding: 8,
-    borderRadius: 8,
-    color: "white",
-    fontSize: 14,
-  },
-  bookButtonText: {
-    color: "white",
-    fontSize: 14,
   },
 });
