@@ -54,7 +54,7 @@ export default function BookForm({ event, navigation }) {
         }}
       >
         <Text style={[styles.birthText, dateIsSet && { color: "black" }]}>
-          {dateIsSet ? `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}` : "Birth Date"}
+          {dateIsSet ? `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}` : "Birth Date"}
         </Text>
       </Pressable>
       <TextInput style={styles.input} placeholder="Document" onChangeText={(newText) => setDocument(newText)} />

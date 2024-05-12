@@ -11,7 +11,7 @@ export default function Temp() {
       id: getUniqueId(),
       name: `Name${ctx.eventsState.length}`,
       date: {
-        day: date.getDay(),
+        day: date.getDate(),
         month: date.toLocaleString("default", { month: "short" }),
         year: date.getFullYear(),
       },

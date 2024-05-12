@@ -7,7 +7,7 @@ export default function Test({ item, Buttons }) {
     <View style={styles.card}>
       <View style={styles.cardContent}>
         <Image style={styles.image} source={image} resizeMode="cover" />
-        <View>
+        <View style={styles.cardTextsWrapper}>
           <View style={styles.cardTopRow}>
             <Text style={styles.date}>{`${item.date.day} ${item.date.month} ${item.date.year}`}</Text>
             <ToggleFavButton item={item}/>
@@ -35,7 +35,11 @@ const styles = StyleSheet.create({
   cardContent: {
     flexDirection: "row",
     alignItems: "center",
+    width: "50%",
     gap: 8,
+  },
+  cardTextsWrapper: {
+    width: "100%",
   },
   cardTopRow: {
     flexDirection: "row",
