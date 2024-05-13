@@ -70,22 +70,30 @@ export const EventsContextProvider = (props) => {
 
   const addEvent = async (event) => {
     dispatchEvents({ type: "add", event });
-    const eventsString = await AsyncStorage.getItem("events");
-    if (eventsString) {
-      const eventsArray = JSON.parse(eventsString);
-      addSorted(event, eventsArray);
-      await AsyncStorage.setItem("events", JSON.stringify(eventsArray));
-    } else {
-      await AsyncStorage.setItem("events", JSON.stringify([event]));
+    try {
+      const eventsString = await AsyncStorage.getItem("events");
+      if (eventsString) {
+        const eventsArray = JSON.parse(eventsString);
+        addSorted(event, eventsArray);
+        await AsyncStorage.setItem("events", JSON.stringify(eventsArray));
+      } else {
+        await AsyncStorage.setItem("events", JSON.stringify([event]));
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
   const updateEvent = async (event) => {
     dispatchEvents({ type: "update", event });
-    const eventsString = await AsyncStorage.getItem("events");
-    const eventsArray = JSON.parse(eventsString).filter((old) => old.id !== event.id);
-    addSorted(event, eventsArray);
-    await AsyncStorage.setItem("events", JSON.stringify(eventsArray));
+    try {
+      const eventsString = await AsyncStorage.getItem("events");
+      const eventsArray = JSON.parse(eventsString).filter((old) => old.id !== event.id);
+      addSorted(event, eventsArray);
+      await AsyncStorage.setItem("events", JSON.stringify(eventsArray));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const clearEvents = () => {
@@ -94,7 +102,11 @@ export const EventsContextProvider = (props) => {
         text: "yes",
         onPress: async () => {
           dispatchEvents({ type: "clear" });
-          await AsyncStorage.clear();
+          try {
+            await AsyncStorage.clear();
+          } catch (e) {
+            console.error(e);
+          }
         },
       },
       {
@@ -105,10 +117,14 @@ export const EventsContextProvider = (props) => {
 
   const toggleFav = async (id) => {
     dispatchEvents({ type: "toggleFav", id });
-    const eventsString = await AsyncStorage.getItem("events");
-    const events = JSON.parse(eventsString);
-    setIsFav(events, id);
-    await AsyncStorage.setItem("events", JSON.stringify(events));
+    try {
+      const eventsString = await AsyncStorage.getItem("events");
+      const events = JSON.parse(eventsString);
+      setIsFav(events, id);
+      await AsyncStorage.setItem("events", JSON.stringify(events));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const deleteEvent = (id) => {
@@ -117,9 +133,13 @@ export const EventsContextProvider = (props) => {
         text: "yes",
         onPress: async () => {
           dispatchEvents({ type: "delete", id });
-          const eventsString = await AsyncStorage.getItem("events");
-          const events = JSON.parse(eventsString);
-          await AsyncStorage.setItem("events", JSON.stringify(events.filter((event) => event.id !== id)));
+          try {
+            const eventsString = await AsyncStorage.getItem("events");
+            const events = JSON.parse(eventsString);
+            await AsyncStorage.setItem("events", JSON.stringify(events.filter((event) => event.id !== id)));
+          } catch (e) {
+            console.error(e);
+          }
         },
       },
       {
@@ -130,19 +150,27 @@ export const EventsContextProvider = (props) => {
 
   const createBooking = async ({ id, obj }) => {
     dispatchEvents({ type: "book", info: obj, id: id });
-    const eventsString = await AsyncStorage.getItem("events");
-    const events = JSON.parse(eventsString);
-    addBooking({ events, id, info: obj });
-    await AsyncStorage.setItem("events", JSON.stringify(events));
+    try {
+      const eventsString = await AsyncStorage.getItem("events");
+      const events = JSON.parse(eventsString);
+      addBooking({ events, id, info: obj });
+      await AsyncStorage.setItem("events", JSON.stringify(events));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const deleteBooking = async ({ id, booking }) => {
     dispatchEvents({ type: "deleteBook", id: id, booking: booking });
-    const eventsString = await AsyncStorage.getItem("events");
-    const events = JSON.parse(eventsString);
-    const event = events.find((findEv) => findEv.id === id);
-    event.bookings = event.bookings.filter((filtBook) => filtBook.document !== booking.document);
-    await AsyncStorage.setItem("events", JSON.stringify(events));
+    try {
+      const eventsString = await AsyncStorage.getItem("events");
+      const events = JSON.parse(eventsString);
+      const event = events.find((findEv) => findEv.id === id);
+      event.bookings = event.bookings.filter((filtBook) => filtBook.document !== booking.document);
+      await AsyncStorage.setItem("events", JSON.stringify(events));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (

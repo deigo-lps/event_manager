@@ -37,15 +37,9 @@ export default function BookForm({ event, navigation }) {
   return (
     <>
       <Input placeholder="Full Name" value={name} onChangeText={(newText) => setName(newText)}/>
-      <DateInput date={date} setDate={setDate} dateIsSet={dateIsSet} setDateIsSet={setDateIsSet}/>
+      <DateInput date={date} setDate={setDate} dateIsSet={dateIsSet} setDateIsSet={setDateIsSet} placeholder="Birth Date"/>
       <Input placeholder="Document" value={document} onChangeText={(newText) => setDocument(newText)}/>
       <View style={styles.buttons}>
-        <Button
-          onPress={() => {
-            navigation.navigate("Bookings", { id: event.id });
-          }}
-          text="Status"
-        />
         <Button onPress={handleSubmit} text="Book" />
       </View>
     </>

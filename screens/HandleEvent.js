@@ -56,7 +56,7 @@ export default function Create({ route, navigation }) {
     }
     eventObj = {
       name: name,
-      fullDate: date,
+      fullDate: `${date}`,
       date: {
         day: date.getDate(),
         month: date.toLocaleString("default", { month: "short" }),
@@ -115,7 +115,7 @@ export default function Create({ route, navigation }) {
           }}
         />
         <Text>Date</Text>
-        <DateInput style={{ marginTop: 0, marginBottom: 8 }} date={date} setDate={setDate} dateIsSet={dateIsSet} setDateIsSet={setDateIsSet} />
+        <DateInput style={{ marginTop: 0, marginBottom: 8 }} date={date} setDate={setDate} dateIsSet={dateIsSet} setDateIsSet={setDateIsSet} placeholder="Date"/>
         <Text>Street</Text>
         <Input
           placeholder="Street"

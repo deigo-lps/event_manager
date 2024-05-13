@@ -2,7 +2,7 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text } from "react-native";
 
-export default function DateInput({ dateIsSet, date, setDate, setDateIsSet, style }) {
+export default function DateInput({ dateIsSet, date, setDate, setDateIsSet, style, placeholder }) {
   const [showPicker, setShowPicker] = useState(false);
 
   const handleDateChange = (e) => {
@@ -13,7 +13,7 @@ export default function DateInput({ dateIsSet, date, setDate, setDateIsSet, styl
 
   return (
     <>
-      {showPicker && <RNDateTimePicker display="spinner" value={date} onChange={handleDateChange} />}
+      {showPicker && <RNDateTimePicker value={date} onChange={handleDateChange} />}
       <Pressable
         style={[styles.date, style]}
         onPress={() => {
@@ -21,7 +21,7 @@ export default function DateInput({ dateIsSet, date, setDate, setDateIsSet, styl
         }}
       >
         <Text style={[styles.dateText, dateIsSet && { color: "black" }]}>
-          {dateIsSet ? `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}` : "Date"}
+          {dateIsSet ? `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}` : placeholder}
         </Text>
       </Pressable>
     </>
