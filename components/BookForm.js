@@ -25,7 +25,7 @@ export default function BookForm({ event, navigation }) {
       ]);
     };
     if (event.tickets >= 1 && name.trim() !== "" && document.trim() !== "" && dateIsSet) {
-      ctx.createBooking({ id: event.id, obj: { name, document, date } });
+      ctx.createBooking({ id: event.id, obj: { name, document, date: `${date}` } });
       goBack("Booking Confirmed.", "Your booking has been confirmed.");
     } else if (event.tickets >= 1) {
       Alert.alert("Missing Field.", "Please fill in every field.", [{ text: "Ok" }]);

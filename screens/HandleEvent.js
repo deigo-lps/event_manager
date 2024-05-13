@@ -20,8 +20,8 @@ export default function Create({ route, navigation }) {
   const [street, setStreet] = useState(event?.location.street || "");
   const [streetNumber, setStreetNumber] = useState(event?.location.number || "");
   const [city, setCity] = useState(event?.location.city || "");
-  const [price, setPrice] = useState(event?.price || "");
-  const [qtty, setQtty] = useState((event?.tickets && `${event?.tickets}`) || "");
+  const [price, setPrice] = useState((event?.price !== undefined && `${event?.price}`) || "");
+  const [qtty, setQtty] = useState((event?.tickets !== undefined && `${event?.tickets}`) || "");
   const [image, setImage] = useState(event?.image || null);
 
   const pickImage = async () => {
@@ -115,7 +115,14 @@ export default function Create({ route, navigation }) {
           }}
         />
         <Text>Date</Text>
-        <DateInput style={{ marginTop: 0, marginBottom: 8 }} date={date} setDate={setDate} dateIsSet={dateIsSet} setDateIsSet={setDateIsSet} placeholder="Date"/>
+        <DateInput
+          style={{ marginTop: 0, marginBottom: 8 }}
+          date={date}
+          setDate={setDate}
+          dateIsSet={dateIsSet}
+          setDateIsSet={setDateIsSet}
+          placeholder="Date"
+        />
         <Text>Street</Text>
         <Input
           placeholder="Street"

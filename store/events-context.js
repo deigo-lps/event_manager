@@ -160,17 +160,27 @@ export const EventsContextProvider = (props) => {
     }
   };
 
-  const deleteBooking = async ({ id, booking }) => {
-    dispatchEvents({ type: "deleteBook", id: id, booking: booking });
-    try {
-      const eventsString = await AsyncStorage.getItem("events");
-      const events = JSON.parse(eventsString);
-      const event = events.find((findEv) => findEv.id === id);
-      event.bookings = event.bookings.filter((filtBook) => filtBook.document !== booking.document);
-      await AsyncStorage.setItem("events", JSON.stringify(events));
-    } catch (e) {
-      console.error(e);
-    }
+  const deleteBooking = ({ id, booking }) => {
+    Alert.alert("Are you sure?", "Are you sure you delete this booking?", [
+      {
+        text: "yes",
+        onPress: async () => {
+          dispatchEvents({ type: "deleteBook", id: id, booking: booking });
+          try {
+            const eventsString = await AsyncStorage.getItem("events");
+            const events = JSON.parse(eventsString);
+            const event = events.find((findEv) => findEv.id === id);
+            event.bookings = event.bookings.filter((filtBook) => filtBook.document !== booking.document);
+            await AsyncStorage.setItem("events", JSON.stringify(events));
+          } catch (e) {
+            console.error(e);
+          }
+        },
+      },
+      {
+        text: "cancel",
+      },
+    ]);
   };
 
   return (
