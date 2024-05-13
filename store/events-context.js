@@ -12,6 +12,7 @@ const EventsContext = React.createContext({
   toggleFav: (id) => {},
   deleteEvent: (id) => {},
   updateEvent: (event) => {},
+  deleteBooking: (event, booking) => {},
   createBooking: ({ id, obj }) => {},
 });
 
@@ -42,6 +43,12 @@ const eventsReducer = (state, action) => {
     case "book": {
       const newState = [...state];
       addBooking({ events: newState, id: action.id, info: action.info });
+      return newState;
+    }
+    case "deleteBook": {
+      const newState = [...state];
+      const event = newState.find((event) => event.id === action.id);
+      event.bookings = event.bookings.filter((booking) => booking.document !== action.booking.document);
       return newState;
     }
     case "clear": {
@@ -76,7 +83,7 @@ export const EventsContextProvider = (props) => {
   const updateEvent = async (event) => {
     dispatchEvents({ type: "update", event });
     const eventsString = await AsyncStorage.getItem("events");
-    const eventsArray = JSON.parse(eventsString).filter((old) => old.id !== event);
+    const eventsArray = JSON.parse(eventsString).filter((old) => old.id !== event.id);
     addSorted(event, eventsArray);
     await AsyncStorage.setItem("events", JSON.stringify(eventsArray));
   };
@@ -129,8 +136,17 @@ export const EventsContextProvider = (props) => {
     await AsyncStorage.setItem("events", JSON.stringify(events));
   };
 
+  const deleteBooking = async ({ id, booking }) => {
+    dispatchEvents({ type: "deleteBook", id: id, booking: booking });
+    const eventsString = await AsyncStorage.getItem("events");
+    const events = JSON.parse(eventsString);
+    const event = events.find((findEv) => findEv.id === id);
+    event.bookings = event.bookings.filter((filtBook) => filtBook.document !== booking.document);
+    await AsyncStorage.setItem("events", JSON.stringify(events));
+  };
+
   return (
-    <EventsContext.Provider value={{ eventsState, addEvent, clearEvents, toggleFav, createBooking, deleteEvent, updateEvent }}>
+    <EventsContext.Provider value={{ eventsState, addEvent, clearEvents, toggleFav, createBooking, deleteEvent, updateEvent, deleteBooking }}>
       {props.children}
     </EventsContext.Provider>
   );

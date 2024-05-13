@@ -9,7 +9,8 @@ import Manager from "./screens/Manager";
 import HomeIcon from "./icons/HomeIcon";
 import Config from "./icons/Config";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import Create from "./screens/Create";
+import HandleEvent from "./screens/HandleEvent";
+import Bookings from "./screens/Bookings";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -21,6 +22,7 @@ export default function App() {
       <Stack.Navigator headerShown={false}>
         <Stack.Screen name="HomeStack" component={Home} options={{ headerShown: false }} />
         <Stack.Screen name="Book" component={Book} options={{ headerShown: false }} />
+        <Stack.Screen name="Bookings" component={Bookings} options={{ headerShown: false }} />
       </Stack.Navigator>
     );
   };
@@ -29,7 +31,7 @@ export default function App() {
     return (
       <Stack.Navigator headerShown={false}>
         <Stack.Screen name="Manager" component={Manager} options={{ headerShown: false }} />
-        <Stack.Screen name="Update" component={Create} options={{ headerShown: false }} />
+        <Stack.Screen name="Update" component={HandleEvent} options={{ headerShown: false }} />
       </Stack.Navigator>
     );
   };
@@ -59,7 +61,7 @@ export default function App() {
       <NavigationContainer>
         <Drawer.Navigator initialRouteName="Main Navigation">
           <Drawer.Screen name="Main Navigation" component={Tabs} />
-          <Drawer.Screen name="Create Event" component={Create} />
+          <Drawer.Screen name="Create Event" component={HandleEvent} />
         </Drawer.Navigator>
       </NavigationContainer>
     </EventsContextProvider>
